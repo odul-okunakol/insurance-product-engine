@@ -1,0 +1,32 @@
+# Product specification: Term Life (level sum insured, level annual premium)
+# All parameters are ILLUSTRATIVE assumptions, not taken from any real insurer or mortality table.
+product: TERM_LIFE_V1
+type: term_life
+version: 1.0.0
+currency: EUR
+description: Level-term life insurance, death benefit paid at the end of the year of death.
+
+eligibility:
+  entry_age: {min: 18, max: 65}
+  term_years: {min: 5, max: 40}
+  max_age_at_expiry: 75
+  sum_insured: {min: 10000, max: 1000000}
+
+basis:
+  interest_rate: 0.005            # assumed technical interest rate p.a.
+  mortality:
+    model: gompertz_makeham       # mu(x) = A + B * c^x  (illustrative, not a real table)
+    A: 0.0002
+    B: 0.000025
+    c: 1.10
+    multiplier: 1.10              # prudence margin applied to q(x)
+
+loadings:
+  acquisition_pct_of_sum_insured: 0.010        # alpha: one-off, charged in year 1
+  admin_pct_of_sum_insured_per_year: 0.0002    # gamma: per year of premium payment
+  premium_proportional: 0.05                   # beta: share of the gross premium
+
+payment_modes:                    # surcharge factor on the annual gross premium
+  annual: 1.00
+  semiannual: 1.02
+  monthly: 1.05

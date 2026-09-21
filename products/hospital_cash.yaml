@@ -1,0 +1,30 @@
+# Product specification: Hospital Daily Cash (health)
+# All parameters are ILLUSTRATIVE assumptions, not taken from any real insurer or statistics.
+product: HOSPITAL_CASH_V1
+type: hospital_cash
+version: 1.0.0
+currency: EUR
+description: Fixed daily benefit for each day in hospital after the deductible period, up to a maximum number of days per stay.
+
+eligibility:
+  age: {min: 18, max: 64}
+  daily_benefit: {min: 10, max: 200}
+  deductible_days_allowed: [0, 3, 7]
+  max_days_per_stay_allowed: [30, 60, 90]
+
+basis:
+  # Hospital stays: admissions per person-year and mean length of stay (days).
+  # Length of stay is modelled as geometric on {1, 2, 3, ...} with the given mean.
+  age_bands:
+    - {from: 18, to: 29, admission_rate: 0.055, mean_length_of_stay_days: 4.5}
+    - {from: 30, to: 39, admission_rate: 0.065, mean_length_of_stay_days: 5.0}
+    - {from: 40, to: 49, admission_rate: 0.085, mean_length_of_stay_days: 6.0}
+    - {from: 50, to: 59, admission_rate: 0.120, mean_length_of_stay_days: 7.0}
+    - {from: 60, to: 64, admission_rate: 0.165, mean_length_of_stay_days: 8.0}
+  safety_loading: 0.10            # margin on the expected benefit
+  expense_ratio: 0.25             # share of the gross premium for expenses and margin
+
+payment_modes:
+  annual: 1.00
+  semiannual: 1.02
+  monthly: 1.05
